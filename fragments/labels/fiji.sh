@@ -14,7 +14,7 @@ fiji)
 
     appName="Fiji.app"
     targetDir="/Applications"
-    blockingProcesses=( "Fiji" "ImageJ" )
+    blockingProcesses=( "Fiji.app" )
     expectedTeamID="XY6F975TAG"
 
     # Use SHA256 hash from the published file as the appNewVersion
