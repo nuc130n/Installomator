@@ -12,7 +12,7 @@ fiji)
         hashURL="https://downloads.imagej.net/fiji/latest/fiji-latest-macos64-jdk.zip.sha256"
     fi
 
-    appName="Fiji.app"
+    # appName="Fiji.app"
     targetDir="/Applications"
     blockingProcesses=( "Fiji.app" )
     expectedTeamID="XY6F975TAG"
