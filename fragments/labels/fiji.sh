@@ -47,6 +47,8 @@ fiji)
         exit 0
     fi
 
+    expectedTeamID="XY6F975TAG"
+
     # After successful install, store the new SHA256 hash for future comparison
     postInstallAction+=(
         'echo "'"$appNewVersion"'" > "'"$versionKeyFile"'"'
