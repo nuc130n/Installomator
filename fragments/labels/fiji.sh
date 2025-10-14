@@ -15,6 +15,7 @@ fiji)
     appName="Fiji.app"
     targetDir="/Applications"
     blockingProcesses=( "Fiji" "ImageJ" )
+    expectedTeamID="XY6F975TAG"
 
     # Use SHA256 hash from the published file as the appNewVersion
     echo "Fetching remote SHA256 hash from: $hashURL"
@@ -46,8 +47,6 @@ fiji)
         echo "✅ Fiji is up to date. No install needed."
         exit 0
     fi
-
-    expectedTeamID="XY6F975TAG"
 
     # After successful install, store the new SHA256 hash for future comparison
     postInstallAction+=(
