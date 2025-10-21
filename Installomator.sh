@@ -84,7 +84,7 @@ BLOCKING_PROCESS_ACTION=tell_user
 
 
 # logo-icon used in dialog boxes if app is blocking
-LOGO=appstore
+LOGO=jamf
 # options:
 #   - appstore      Icon is Apple App Store (default)
 #   - jamf          JAMF Pro
@@ -111,7 +111,7 @@ IGNORE_APP_STORE_APPS=no
 #                  Known bad example: Slack will lose all settings.
 
 # Owner of copied apps
-SYSTEMOWNER=0
+SYSTEMOWNER=1
 # options:
 #  - 0             Current user will be owner of copied apps, just like if they
 #                  installed it themselves (default).
@@ -142,7 +142,7 @@ REOPEN="yes"
 
 
 # Interrupt Do Not Disturb (DND) full screen apps
-INTERRUPT_DND="yes"
+INTERRUPT_DND="no"
 # options:
 #  - yes           Script will run without checking for DND full screen apps.
 #  - no            Script will exit when an active DND full screen app is detected.
