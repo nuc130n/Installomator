@@ -32,7 +32,7 @@ adobereaderdc-update)
         printlog "Adobe Acrobat Updater Running, killing it to avoid any conflicts" INFO
         killall "Acrobat Updater"
       fi
-      downloadURL=$(echo https://ardownload2.adobe.com/pub/adobe/reader/mac/AcrobatDC/"$adobecurrentmod"/AcroRdrDCUpd"$adobecurrentmod"_MUI.dmg)
+      downloadURL=$(echo https://ardownload3.adobe.com/pub/adobe/reader/mac/AcrobatDC/"$adobecurrentmod"/AcroRdrDCUpd"$adobecurrentmod"_MUI.dmg)
       appNewVersion="${adobecurrent}"
     else
       printlog "Changing IFS for Adobe Reader" INFO
@@ -43,10 +43,10 @@ adobereaderdc-update)
       for version in $versions; do
         version="${version//.}"
         printlog "trying version: $version" INFO
-        local httpstatus=$(curl -X HEAD -s "https://ardownload2.adobe.com/pub/adobe/reader/mac/AcrobatDC/${version}/AcroRdrDC_${version}_MUI.dmg" --write-out "%{http_code}")
-        printlog "HTTP status for Adobe Reader full installer URL https://ardownload2.adobe.com/pub/adobe/reader/mac/AcrobatDC/${version}/AcroRdrDC_${version}_MUI.dmg is $httpstatus" DEBUG
+        local httpstatus=$(curl -X HEAD -s "https://ardownload3.adobe.com/pub/adobe/reader/mac/AcrobatDC/${version}/AcroRdrDC_${version}_MUI.dmg" --write-out "%{http_code}")
+        printlog "HTTP status for Adobe Reader full installer URL https://ardownload3.adobe.com/pub/adobe/reader/mac/AcrobatDC/${version}/AcroRdrDC_${version}_MUI.dmg is $httpstatus" DEBUG
         if [[ "${httpstatus}" == "200" ]]; then
-          downloadURL="https://ardownload2.adobe.com/pub/adobe/reader/mac/AcrobatDC/${version}/AcroRdrDC_${version}_MUI.dmg"
+          downloadURL="https://ardownload3.adobe.com/pub/adobe/reader/mac/AcrobatDC/${version}/AcroRdrDC_${version}_MUI.dmg"
           unset httpstatus
           break
         fi
