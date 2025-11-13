@@ -22,3 +22,4 @@ adobecreativeclouddesktop)
     blockingProcesses=( "Creative Cloud" )
     Company="Adobe"
     ;;
+    
