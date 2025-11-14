@@ -4087,6 +4087,27 @@ emacs)
     appNewVersion="$(echo "${downloadURL}" | sed -n 's/.*Emacs-\([0-9.-]*\)-universal.dmg/\1/p')"
     expectedTeamID="5BRAQAFB8B"
     ;;
+endnote20)
+    name="EndNote 20"
+    type="dmg"
+    downloadURL="https://download.endnote.com/downloads/20/EndNote20Installer.dmg"
+    appName="EndNote 20.app"
+    expectedTeamID="JQ525L2MZD"
+    ;;
+endnote21)
+    name="EndNote 21"
+    type="dmg"
+    downloadURL="https://download.endnote.com/downloads/21/EndNote21Installer.dmg"
+    appName="EndNote 21.app"
+    expectedTeamID="JQ525L2MZD"
+    ;;
+endnote2025)
+    name="EndNote 2025"
+    type="dmg"
+    downloadURL="https://download.endnote.com/downloads/2025/EndNote2025Installer.dmg"
+    appName="EndNote 2025.app"
+    expectedTeamID="JQ525L2MZD"
+    ;;
 enteauth)
     name="Ente Auth"
     type="dmg"
