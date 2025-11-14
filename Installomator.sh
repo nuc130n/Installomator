@@ -4089,9 +4089,11 @@ emacs)
     ;;
 endnote20)
     name="EndNote 20"
-    type="dmg"
+    type="appInDmg"
     downloadURL="https://download.endnote.com/downloads/20/EndNote20Installer.dmg"
-    appName="EndNote 20.app"
+    appNewFile="Install EndNote 20.app"
+    installerTool="/Applications/Install EndNote 20.app/Contents/MacOS/Install EndNote"
+    installerArgs=( "-silent" )
     expectedTeamID="JQ525L2MZD"
     ;;
 endnote21)
