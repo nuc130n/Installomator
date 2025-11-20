@@ -3,11 +3,11 @@ flowjo)
     type="dmg"
     if [[ "$(uname -m)" == "arm64" ]]; then
       # Apple Silicon
-      downloadURL="https://flowjo.com/flowjo/download/FlowJo-v11-macOS-AppleSilicon.dmg"
+      downloadURL="https://downloads.bdaccessportal.com/v11/mac/arm64/FlowJo-11.1.0-arm64.dmg"
     else
       # Intel
-      downloadURL="https://flowjo.com/flowjo/download/FlowJo-v11-macOS-Intel.dmg"
+      downloadURL="https://downloads.bdaccessportal.com/v11/mac/x64/FlowJo-11.1.0-x64.dmg"
     fi
-    appNewVersion=$(echo "${downloadURL}" | grep -o -E "v11[0-9\.]*" | sed 's/v//')
+    appNewVersion="$(echo "${downloadURL}" | sed -E 's/.*FlowJo-([0-9]+(\.[0-9]+)*).*/\1/')"
     expectedTeamID="C79HU5AD9V"
     ;;
