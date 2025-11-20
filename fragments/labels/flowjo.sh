@@ -10,4 +10,5 @@ flowjo)
     fi
     appNewVersion="$(echo "${downloadURL}" | sed -E 's/.*FlowJo-([0-9]+(\.[0-9]+)*).*/\1/')"
     expectedTeamID="C79HU5AD9V"
+    appName="FlowJo 11"
     ;;
