@@ -1,0 +1,10 @@
+realvncconnect)
+    # credit: Cedric GAIN (@nuc130n)
+    name="RealVNC Connect"
+    appName="RealVNC Connect.app"
+    type="pkg"
+    downloadURL="https://downloads.realvnc.com/download/file/realvnc-connect/RealVNC-Connect-8.2.2-MacOSX-universal.pkg"
+    appNewVersion="8.2.2"
+    sha256="413e0a1dfb7d1b3fe17bac948babea5762a3d00faf904454c924cf6d23bf3bb9"
+    expectedTeamID="?????"
+    ;;
