@@ -1,9 +1,8 @@
 realvncconnect)
     name="RealVNC Connect"
-    appName="RealVNC Connect.app"
     type="pkg"
     packageID="com.realvnc.rvncconnect.pkg"
-	downloadURL=$(curl -s "https://downloads.realvnc.com/download/file/realvnc-connect/" | grep -oE 'RealVNC-Connect-[0-9]+\.[0-9]+\.[0-9]+-MacOSX-universal\.pkg' | sort -V | tail -1 | sed 's|^|https://downloads.realvnc.com/download/file/realvnc-connect/|')
-    appNewVersion="$(echo ${downloadURL} | sed -n 's:.*RealVNC-Connect-\(.*\)-MacOSX-universal.pkg:\1:p')"
+    downloadURL="https://downloads.realvnc.com/download/file/connect-macos"
+    appNewVersion=$(curl -fsIL "https://downloads.realvnc.com/download/file/connect-macos" | grep -i "location:" | sed -n 's/.*RealVNC-Connect-\([0-9.]*\)-MacOSX-universal\.pkg.*/\1/p')
     expectedTeamID="ZNCQ8JEH7X"
     ;;
