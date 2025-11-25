@@ -1,0 +1,7 @@
+cellprofiler)
+    name="CellProfiler"
+    type="zip"
+    downloadURL=$(downloadURLFromGit CellProfiler CellProfiler)
+    appNewVersion=$(versionFromGit CellProfiler CellProfiler)
+    expectedTeamID="27YQ9U45D9"
+    ;;
