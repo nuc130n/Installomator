@@ -3,6 +3,6 @@ realvncconnect)
     type="pkg"
     packageID="com.realvnc.rvncconnect.pkg"
     downloadURL="https://downloads.realvnc.com/download/file/realvnc-connect/RealVNC-Connect-8.2.2-MacOSX-universal.pkg"
-    appNewVersion=$(echo "$downloadURL" | sed -n 's/.*RealVNC-Connect-\([0-9.]*\)-MacOSX.*/\1/p')
+    appNewVersion="$(echo ${downloadURL} | sed -n 's:.*RealVNC-Connect-\(.*\)-MacOSX.*:\1:p')"
     expectedTeamID="ZNCQ8JEH7X"
     ;;
