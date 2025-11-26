@@ -1,8 +1,8 @@
 loupebrowser)
-    name="Loupe Browser"
-    type="pkg"
-    downloadPage="https://www.10xgenomics.com/support/software/loupe-browser/downloads/previous-versions"
-    downloadURL=$(curl -fs "$downloadPage" | grep -o 'https://[^"]*loupe-browser-[0-9.]*-mac.pkg' | head -n1)
-    appNewVersion=$(echo "$downloadURL" | sed -E 's/.*loupe-browser-([0-9.]+)-mac.*/\1/')
-    expectedTeamID=""
-    ;;
+	#credit: Cedric GAIN (@nuc130n)
+	name="Loupe Browser"
+	type="dmg"
+	downloadURL=$(curl -fs "https://www.10xgenomics.com/support/software/loupe-browser/downloads/previous-versions/" | grep -o 'https://[^"]*loupe-browser-[0-9.]*-mac.dmg' | head -n1)
+	appNewVersion=$(echo "$downloadURL" | sed -E 's/.*loupe-browser-([0-9.]+)-mac.*/\1/')
+	expectedTeamID="384T6Y7Q52"
+	;;
