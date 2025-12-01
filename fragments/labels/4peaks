@@ -1,7 +1,7 @@
 4peaks)
     name="4Peaks"
     type="dmg"
-    downloadURL="https://downloads.nucleobytes.com/4peaks"
+    downloadURL="https://downloads.nucleobytes.com/4peaks.dmg"
     appName="4Peaks.app"
     expectedTeamID="9JKFY89GFY"
     ;;
