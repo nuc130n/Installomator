@@ -8,5 +8,5 @@ chimerax)
     curlOptions=( --data "accept=Accept" )
     appName="ChimeraX-${appNewVersion}.app"
     expectedTeamID="LWV8X224YF"
-    blockingProcesses=( ChimeraX )
+    blockingProcesses=( "ChimeraX" )
     ;;
