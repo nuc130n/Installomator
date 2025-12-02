@@ -1,7 +1,8 @@
 macvector)
     name="MacVector"
     type="dmg"
-    downloadURL="$(curl -s https://macvector.net/ | grep -Eo 'MacVector[0-9]+\.[0-9]+\.[0-9]+\([0-9]+\)\.dmg' | head -n 1 | sed 's|^|https://macvector.net/|')"
-    appName="MacVector.app"
-    expectedTeamID=""
+    downloadURL=$(curl -fsL "https://macvector.org/support/downloads/installers-and-updaters/" | grep -oE 'https://[^"]*MacVector[^"]*\.dmg' | head -1)
+    appCustomDirectory="MacVector"
+    appNewName="MacVector"
+    expectedTeamID="BK85R8X44N"
     ;;
