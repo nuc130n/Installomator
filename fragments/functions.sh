@@ -857,6 +857,69 @@ installAppInDmgInZip() {
     installFromDMG
 }
 
+installAppinZipinDmg() {
+    # created: Cedric GAIN
+    printlog "Processing install type: installAppinZipinDmg" INFO
+
+    # Always install into /Applications
+    targetDir="/Applications"
+
+    # Mount the DMG – mountDMG sets $mntpoint
+    if ! mountDMG; then
+        printlog "ERROR: Failed to mount DMG." ERROR
+        cleanupAndExit 1
+    fi
+
+    # Determine ZIP inside DMG
+    zipPath=""
+
+    # explicit path
+    if [[ -n "$zipRelativePath" && -f "$mntpoint/$zipRelativePath" ]]; then
+        zipPath="$mntpoint/$zipRelativePath"
+        printlog "Using zipRelativePath: $zipPath" INFO
+    fi
+
+    # autodiscover ZIP if needed
+    if [[ -z "$zipPath" ]]; then
+        printlog "Searching for ZIP files inside DMG…" INFO
+        mapfile -t foundZips < <(find "$mntpoint" -type f -iname "*.zip" 2>/dev/null)
+
+        if [[ ${#foundZips[@]} -eq 0 ]]; then
+            printlog "ERROR: No ZIP found inside DMG." ERROR
+            cleanupAndExit 1
+        fi
+
+        # name match
+        if [[ -n "$zipName" ]]; then
+            for z in "${foundZips[@]}"; do
+                if [[ "$(basename "$z")" == "$zipName" ]]; then
+                    zipPath="$z"
+                    break
+                fi
+            done
+        fi
+
+        # first ZIP fallback
+        if [[ -z "$zipPath" ]]; then
+            zipPath="${foundZips[0]}"
+            printlog "Multiple ZIPs found; selected: $zipPath" INFO
+        fi
+    fi
+
+    # Feed ZIP to Installomator's existing ZIP handler
+    archiveName="$zipPath"
+
+    printlog "Installing from ZIP inside DMG: $archiveName → $targetDir" INFO
+
+    # installFromZip will:
+    #   - unzip
+    #   - install the app
+    #   - perform TeamID check (if applicable)
+    #   - set installedResult
+    #   - call cleanupAndExit
+    installFromZip
+}
+
 runUpdateTool() {
     printlog "Function called: runUpdateTool"
     if [[ -x $updateTool ]]; then
