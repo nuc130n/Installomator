@@ -7,7 +7,7 @@ megasync)
         downloadURL="https://mega.nz/MEGAsyncSetup.dmg"
     fi
     archiveName="MEGAsyncSetup.dmg"
-    appNewVersion=$(defaults read "$(appPath "/Volumes/Install MEGA/MEGASync.app")/Contents/Info" CFBundleShortVersionString 2>/dev/null)
+    appNewVersion=$(defaults read "$mountedVolume/MEGASync.app/Contents/Info" CFBundleShortVersionString 2>/dev/null)
     expectedTeamID="T9RH74Y7L9"
     blockingProcesses=( "MEGASync" )
     ;;
