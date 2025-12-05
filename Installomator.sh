@@ -1211,7 +1211,7 @@ installAppInDmgInZip() {
     installFromDMG
 }
 
-installAppinZipinDmg() {
+installAppInZipInDmg() {
     # created: Cedric GAIN
     printlog "Processing install type: installAppinZipinDmg" INFO
 
@@ -11444,7 +11444,7 @@ case $type in
         installAppInDmgInZip
         ;;
     appInZipInDmg)
-        installAppinZipinDmg
+        installAppInZipInDmg
         ;;
     *)
         cleanupAndExit 99 "Cannot handle type $type" ERROR
