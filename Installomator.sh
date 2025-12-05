@@ -15,7 +15,7 @@ label="" # if no label is sent to the script, this will be used
 #    Adam Codega - @acodega
 #    Trevor Sysock - @BigMacAdmin
 #    Bart Reardon - @bartreardon
-#	 CEdric Gain - @nuc130n
+#	 Cedric Gain - @nuc130n
 #
 # with contributions from many others
 
