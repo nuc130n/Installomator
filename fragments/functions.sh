@@ -858,8 +858,8 @@ installAppInDmgInZip() {
 }
 
 installAppInZipInDmg() {
-    # created: Cedric GAIN
-    printlog "Processing install type: installAppinZipinDmg" INFO
+    # credit: Cedric GAIN (@nuc130n)
+    printlog "Processing install type: appinZipinDmg" INFO
 
     # Always install into /Applications
     targetDir="/Applications"
