@@ -857,7 +857,7 @@ installAppInDmgInZip() {
     installFromDMG
 }
 
-installAppinZipinDmg() {
+installAppInZipInDmg() {
     # created: Cedric GAIN
     printlog "Processing install type: installAppinZipinDmg" INFO
 
