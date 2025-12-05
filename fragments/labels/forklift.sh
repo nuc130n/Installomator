@@ -8,6 +8,6 @@ forklift)
     if [[ -z "$appNewVersion" ]]; then
         appNewVersion=$(defaults read "$appPathDetected/Contents/Info" CFBundleVersion 2>/dev/null)
     fi
-    expectedTeamID="YJ22L2T93R"
+    expectedTeamID="J3CP9BBBN6"
     blockingProcesses=( "ForkLift" )
     ;;
