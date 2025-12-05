@@ -372,6 +372,9 @@ case $type in
         ;;
     appInDmgInZip)
         installAppInDmgInZip
+        ;;    
+    appInZipInDmg)
+        installAppInZipInDmg
         ;;
     *)
         cleanupAndExit 99 "Cannot handle type $type" ERROR
