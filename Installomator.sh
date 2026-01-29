@@ -7853,7 +7853,7 @@ nweasecuretestingbrowser)
     ;;
 
 obsstudio)
-    name="OBS"
+    name="OBS Studio"
     type="dmg"
     if [[ $(arch) == "arm64" ]]; then
         SUFeedURL="https://obsproject.com/osx_update/updates_arm64_v2.xml"
