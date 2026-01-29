@@ -7851,7 +7851,6 @@ nweasecuretestingbrowser)
     appNewVersion=""
     expectedTeamID="SRTXZJ7SQ3"
     ;;
-
 obsstudio)
     name="OBS Studio"
     type="dmg"
