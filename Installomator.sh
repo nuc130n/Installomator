@@ -7852,7 +7852,7 @@ nweasecuretestingbrowser)
     expectedTeamID="SRTXZJ7SQ3"
     ;;
 
-obs)
+obsstudio)
     name="OBS"
     type="dmg"
     if [[ $(arch) == "arm64" ]]; then
