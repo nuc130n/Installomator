@@ -204,6 +204,7 @@ NOTIFY_DIALOG=0
 #     - pkgInDmg
 #     - pkgInZip
 #     - appInDmgInZip
+#     - appInZipInDmg
 #     - updateronly     This last one is for labels that should only run an updateTool (see below)
 #
 # - packageID: (optional)
@@ -1212,66 +1213,101 @@ installAppInDmgInZip() {
 }
 
 installAppInZipInDmg() {
-    # created: Cedric GAIN
-    printlog "Processing install type: installAppinZipinDmg" INFO
+    printlog "Install type: appInZipInDmg" INFO
 
-    # Always install into /Applications
-    targetDir="/Applications"
+    printlog "DEBUG: tmpDir is: $tmpDir" INFO
+    printlog "DEBUG: PWD is: $(pwd)" INFO
 
-    # Mount the DMG – mountDMG sets $mntpoint
-    if ! mountDMG; then
-        printlog "ERROR: Failed to mount DMG." ERROR
-        cleanupAndExit 1
+    # --- Mount DMG ---
+    mountDMG
+    if [[ -z "$dmgmount" || ! -d "$dmgmount" ]]; then
+        cleanupAndExit 1 "Failed to mount DMG" ERROR
+    fi
+    printlog "Mounted DMG at: $dmgmount" INFO
+
+    printlog "DEBUG: Searching ZIP inside DMG…" INFO
+
+    # --- Find ZIP inside DMG ---
+    zipfile=$(find "$dmgmount" -type f -iname "*.zip" -print 2>/dev/null | head -n 1)
+    printlog "DEBUG: zipfile found = $zipfile" INFO
+
+    if [[ -z "$zipfile" ]]; then
+        hdiutil detach "$dmgmount" -quiet 2>/dev/null || true
+        cleanupAndExit 1 "No zip file found in DMG" ERROR
     fi
 
-    # Determine ZIP inside DMG
-    zipPath=""
+    printlog "Found ZIP: $zipfile" INFO
 
-    # explicit path
-    if [[ -n "$zipRelativePath" && -f "$mntpoint/$zipRelativePath" ]]; then
-        zipPath="$mntpoint/$zipRelativePath"
-        printlog "Using zipRelativePath: $zipPath" INFO
+    # --- Local paths ---
+    extractDir="$tmpDir/zipExtract"
+    localZip="$tmpDir/zipInsideDmg.zip"
+
+    printlog "DEBUG: extractDir = $extractDir" INFO
+    printlog "DEBUG: localZip path before copy = $localZip" INFO
+
+    rm -rf "$extractDir" "$localZip"
+    mkdir -p "$extractDir"
+
+    # --- Copy ZIP to temp ---
+    printlog "Copying ZIP from DMG to local temp before extraction…" INFO
+    cp "$zipfile" "$localZip"
+
+    printlog "DEBUG: Listing tmpDir AFTER copy:" INFO
+    ls -l "$tmpDir" | printlog INFO
+
+    printlog "DEBUG: ZIP file size = $(stat -f%z "$localZip")" INFO
+    printlog "DEBUG: ZIP shasum = $(shasum "$localZip")" INFO
+
+    # --- Test ZIP using unzip, not ditto ---
+    printlog "DEBUG: Testing ZIP integrity using unzip -t…" INFO
+    unzip -t "$localZip" >/dev/null 2>&1
+    unzip_status=$?
+    printlog "DEBUG: unzip test exit code = $unzip_status" INFO
+
+    if [[ $unzip_status -ne 0 ]]; then
+        cleanupAndExit 1 "ZIP integrity test failed" ERROR
     fi
 
-    # autodiscover ZIP if needed
-    if [[ -z "$zipPath" ]]; then
-        printlog "Searching for ZIP files inside DMG…" INFO
-        mapfile -t foundZips < <(find "$mntpoint" -type f -iname "*.zip" 2>/dev/null)
+    # --- Extract ZIP (USE UNZIP HERE) ---
+    printlog "Extracting ZIP locally (via unzip)…" INFO
+    printlog "DEBUG: unzip \"$localZip\" -d \"$extractDir\"" INFO
 
-        if [[ ${#foundZips[@]} -eq 0 ]]; then
-            printlog "ERROR: No ZIP found inside DMG." ERROR
-            cleanupAndExit 1
-        fi
-
-        # name match
-        if [[ -n "$zipName" ]]; then
-            for z in "${foundZips[@]}"; do
-                if [[ "$(basename "$z")" == "$zipName" ]]; then
-                    zipPath="$z"
-                    break
-                fi
-            done
-        fi
-
-        # first ZIP fallback
-        if [[ -z "$zipPath" ]]; then
-            zipPath="${foundZips[0]}"
-            printlog "Multiple ZIPs found; selected: $zipPath" INFO
-        fi
+    if ! unzip -qq "$localZip" -d "$extractDir"; then
+        printlog "DEBUG: Extraction failed — listing extractDir:" INFO
+        ls -l "$extractDir" | printlog INFO
+        cleanupAndExit 1 "Failed to extract ZIP" ERROR
     fi
 
-    # Feed ZIP to Installomator's existing ZIP handler
-    archiveName="$zipPath"
+    # --- Find top-level folder ---
+    topFolder=$(find "$extractDir" -mindepth 1 -maxdepth 1 -type d | head -n 1)
+    printlog "DEBUG: topFolder = $topFolder" INFO
 
-    printlog "Installing from ZIP inside DMG: $archiveName → $targetDir" INFO
+    if [[ -z "$topFolder" ]]; then
+        cleanupAndExit 1 "No folder found inside ZIP" ERROR
+    fi
 
-    # installFromZip will:
-    #   - unzip
-    #   - install the app
-    #   - perform TeamID check (if applicable)
-    #   - set installedResult
-    #   - call cleanupAndExit
-    installFromZip
+    printlog "Top-level extracted folder: $topFolder" INFO
+
+    # --- Install into /Applications ---
+    dest="/Applications/$(basename "$topFolder")"
+    printlog "Installing folder to: $dest" INFO
+
+    rm -rf "$dest"
+    if ! ditto "$topFolder" "$dest"; then
+        cleanupAndExit 1 "Failed to install folder" ERROR
+    fi
+
+    # --- Fix EndNote permissions ---
+    printlog "Setting ownership to root:staff and permissions to 775 for $dest" INFO
+    chown -R root:staff "$dest"
+    chmod -R 775 "$dest"
+
+    # --- Cleanup ---
+    hdiutil detach "$dmgmount" -quiet 2>/dev/null || true
+    rm -rf "$extractDir"
+
+    printlog "Successfully installed to $dest" INFO
+    return 0
 }
 
 runUpdateTool() {
@@ -3382,8 +3418,9 @@ chimerax)
     if [ -z "$latest" ]; then appNewVersion="1.10.1"; else appNewVersion="$latest"; fi
     dmgName="ChimeraX-${appNewVersion}.dmg"
     fileParam="${appNewVersion}/mac_universal/${dmgName}"
-    downloadURL="https://www.cgl.ucsf.edu/chimerax/cgi-bin/secure/chimerax-get.py"
-    curlOptions=( --location --data "file=${fileParam}" --data "choice=Accept" )
+    # Two-step download: first POST to get redirect page with ident token, then extract actual URL
+    redirectPage=$(curl -sfL --data "file=${fileParam}" --data "choice=Accept" "https://www.cgl.ucsf.edu/chimerax/cgi-bin/secure/chimerax-get.py")
+    downloadURL="https://www.cgl.ucsf.edu$(echo "$redirectPage" | grep -oE 'url=/[^"]+' | sed 's/url=//')"
     appName="ChimeraX-${appNewVersion}.app"
     expectedTeamID="LWV8X224YF"
     blockingProcess=( "ChimeraX" )
@@ -4292,12 +4329,16 @@ endnote21)
     expectedTeamID="JQ525L2MZD"
     ;;
 endnote2025)
+	# credit: Cedric GAIN (@nuc130n)
     name="EndNote 2025"
-    type="dmg"
+    # Call the newly created install type function to install the app from the zip inside the dmg
+    type="appInZipInDmg"
     downloadURL="https://download.endnote.com/downloads/2025/EndNote2025Installer.dmg"
+    # zipRelativePath="Install EndNote 2025.app/Contents/Resources/EndNote.zip"	# optional, to specify the zip path
+    # zipName="EndNote.zip"          # optional, to pick a specific zip if multiple exist
     appName="EndNote 2025.app"
-    expectedTeamID="JQ525L2MZD"
-    ;;
+    expectedTeamID="JQ525L2MZD"    # optional team ID validation handled by installFromZip
+;;
 enteauth)
     name="Ente Auth"
     type="dmg"
@@ -6411,7 +6452,8 @@ loupebrowser)
 	#credit: Cedric GAIN (@nuc130n)
     name="Loupe Browser"
     type="dmg"
-    downloadURL=$(curl -fs "https://www.10xgenomics.com/support/software/loupe-browser/downloads/previous-versions" | grep -o 'https://[^"]*Loupe-Browser-[0-9.]*\.dmg[^"]*' | head -n1 | sed 's/&amp;/\&/g')
+    curlOptions=( -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15" )
+    downloadURL=$(curl -fsL "${curlOptions[@]}" "https://www.10xgenomics.com/support/software/loupe-browser/downloads/previous-versions" | grep -o 'https://[^"]*Loupe-Browser-[0-9.]*\.dmg[^"]*' | head -n1 | sed 's/&amp;/\&/g; s/\\u0026/\&/g')
     appNewVersion=$(echo "$downloadURL" | sed -E 's/.*Loupe-Browser-([0-9.]+)\.dmg.*/\1/')
     appName="Loupe Browser ${appNewVersion%%.*}.app"
     expectedTeamID="384T6Y7Q52"
@@ -7598,6 +7640,15 @@ muzzle)
     appNewVersion=$(curl -fs https://muzzleapp.com/updates/  | grep -io 'h2.*Version.* [0-9.]*.*h2' | head -1 | sed -E 's/.*ersion *([0-9.]*).*/\1/g')
     expectedTeamID="49EYHPJ4Q3"
     ;;
+mzmine)
+    # credit: Cedric GAIN (@nuc130n)
+    name="MZmine"
+    type="dmg"
+    downloadURL="$(downloadURLFromGit mzmine mzmine | grep -i 'installer_academia.*\.dmg')"
+    appNewVersion="$(versionFromGit mzmine mzmine)"
+    expectedTeamID="25Z887Z794"
+    blockingProcesses=( mzmine )
+    ;;
 mysqlworkbenchce)
     name="MySQLWorkbench"
     type="dmg"
@@ -7608,15 +7659,6 @@ mysqlworkbenchce)
     fi
     appNewVersion="$(curl -fsL 'http://workbench.mysql.com/current-release' | grep fullversion | cut -d\" -f4).CE"
     expectedTeamID="VB5E2TV963"
-    ;;
-mzmine)
-    # credit: Cedric GAIN (@nuc130n)
-    name="MZmine"
-    type="dmg"
-    downloadURL="$(curl -sL https://github.com/mzmine/mzmine/releases/latest | grep -Eo 'https://github.com/mzmine/mzmine/releases/download/[^\"]*macOS_installer-[0-9.]*\.dmg' | head -n1)"
-    appNewVersion="$(basename "$downloadURL" | sed -E 's/.*macOS_installer-([0-9.]+)\.dmg/\1/')"
-    expectedTeamID="25Z887Z794"
-    blockingProcesses=( mzmine )
     ;;
 namiral)
     name="Namirial Sign"
@@ -11231,6 +11273,9 @@ if [ -z "$archiveName" ]; then
         *InZip)
             archiveName="${name}.zip"
             ;;
+        *InDmg)
+        	archiveName="${name}.dmg"
+        	;;
         updateronly)
             ;;
         *)
@@ -11430,6 +11475,8 @@ if [ -n "$installerTool" ]; then
     appName="$installerTool"
 fi
 
+printf '>>> DEBUG: type=%q\n' "$type"
+
 case $type in
     dmg)
         installFromDMG
@@ -11453,7 +11500,7 @@ case $type in
         installAppInDmgInZip
         ;;
     appInZipInDmg)
-        installAppInZipInDmg
+    	installAppInZipInDmg
         ;;
     *)
         cleanupAndExit 99 "Cannot handle type $type" ERROR
