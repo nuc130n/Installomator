@@ -1,11 +1,10 @@
 macvector)
     name="MacVector"
     type="dmg"
-    downloadURL=$(curl -fsL "https://macvector.org/support/downloads/installers-and-updaters/" | grep -oE 'https://[^"]*MacVector[^"]*\.dmg' | head -1)
-    appNewVersion=$(echo "$downloadURL" | grep -oE '[0-9]+\.[0-9]+(\.[0-9]+)?')
-    appCustomDirectory="MacVector"
-    appNewName="MacVector"
-    appPath="/Applications/MacVector/MacVector.app"
+    appNewVersion="$(curl -fsL "https://macvector.com/support/installers-and-updaters/" | grep -oE 'MacVector [0-9]+\.[0-9]+\.[0-9]+' | head -1 | awk '{print $2}')"
+    downloadURL="https://macvector.net/MacVector${appNewVersion}(64).dmg"
+    folderName="MacVector"
+    appName="${folderName}/MacVector.app"
     versionKey="CFBundleShortVersionString"
     expectedTeamID="BK85R8X44N"
     ;;
