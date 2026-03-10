@@ -2,6 +2,7 @@ macvector)
     name="MacVector"
     type="dmg"
     downloadURL=$(curl -fsL "https://macvector.org/support/downloads/installers-and-updaters/" | grep -oE 'https://[^"]*MacVector[^"]*\.dmg' | head -1)
+    appNewVersion=$(echo "$downloadURL" | grep -oE '[0-9]+\.[0-9]+(\.[0-9]+)?')
     appCustomDirectory="MacVector"
     appNewName="MacVector"
     appPath="/Applications/MacVector/MacVector.app"

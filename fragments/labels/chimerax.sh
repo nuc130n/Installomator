@@ -11,5 +11,5 @@ chimerax)
     curlOptions=( --location --data "file=${fileParam}" --data "choice=Accept" )
     appName="ChimeraX-${appNewVersion}.app"
     expectedTeamID="LWV8X224YF"
-    blockingProcess=( "ChimeraX" )
+    blockingProcesses=( "ChimeraX" )
     ;;
