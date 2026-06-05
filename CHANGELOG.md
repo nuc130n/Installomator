@@ -1,3 +1,24 @@
+## v10.8-i2bc — i2bc fork (June 2026)
+
+Synced with upstream Installomator v10.8 and brought fully current with upstream `main` as of June 2026.
+
+### i2bc-specific additions
+- **Fiji** (ImageJ) — ARM64 + Intel, with SHA256 verification
+- **CellProfiler** — via GitHub releases
+- **EndNote 20, 21, 2025** — direct Clarivate download URLs
+- **Loupe Browser** (10x Genomics) — dynamic version detection
+- **Zimbra Desktop** — dynamic DMG URL from zimbra.com
+- **Krita** — KDE stable directory listing
+
+### Changes vs v10.7-i2bc
+- Merged all upstream commits through June 2026
+- Includes all labels added in upstream v10.8 and beyond
+- URL fixes for Adobe Digital Editions, FlowJo (now dynamic)
+- New upstream labels: thoriumreader, losslesscut, zettlr, filemakerpro20/21/22, firecutfordavinciresolve, firecutforpremierepro, snagit2026, synergy sports suite, and many more
+- Label renames: `obs` (was `obsstudio`), `cisdemdocumentreader`, `firefoxesrintl` (was `firefoxesr_intl`)
+
+---
+
 ## v10.8
 
 
